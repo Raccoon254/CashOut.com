@@ -23,10 +23,10 @@ if(isset($_POST['submit'])) {
     $result = mysqli_query($conn, $query);
     if(mysqli_num_rows($result) > 0) {
         echo "Sorry, that email already exists. Please try again.";
-       } else {
+    } else {
         // insert the new user into the Users table
-        $query = "INSERT INTO Users (name, email, password, referral_code, balance)
-                  VALUES ('$name', '$email', '$password', '$refer_code', '$balance')";
+        $query = "INSERT INTO Users (name, email, password, referral_code, balance, referred_by)
+                  VALUES ('$name', '$email', '$password','$refer_code', '$balance', '$referral_code')";
         $result = mysqli_query($conn, $query);
         if($result) {
             echo "Success! Your account has been created. Please log in.";
@@ -35,7 +35,7 @@ if(isset($_POST['submit'])) {
             $result = mysqli_query($conn, $query_upd);
             }
             // redirect the user to the login page
-            header("Location: index.php");
+            header("Refresh:5; url=index.php");
         } else {
             echo "Sorry, there was an error. Please try again.";
         }
