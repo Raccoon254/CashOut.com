@@ -33,5 +33,8 @@ echo "</form>";
 echo "<form action='logout.php' method='post'>";
 echo "<input type='submit' name='logout' value='Logout'/>";
 echo "</form>";
+echo "<form action='about.php' method='post'>";
+echo "<input type='submit' name='about' value='about'/>";
+echo "</form>";
 $conn->close();
 ?>

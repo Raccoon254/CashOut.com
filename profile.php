@@ -18,9 +18,6 @@ $referral_code = $row['referral_code'];
 echo "Welcome, $name!<br>";
 echo "Your balance is: $ $balance <br><br>";
 
-// display the user's referral code
-echo "Your referral code: $referral_code <br><br>";
-
 // display a table of the user's referrals
 echo "<table>";
 echo "<tr> <th>Name</th> <th>Email</th> </tr>";
@@ -30,6 +27,21 @@ while($row = mysqli_fetch_array($result)) {
     echo "<tr> <td>".$row['name']."</td> <td>".$row['email']."</td> </tr>";
 }
 echo "</table> <br>";
+
+// create a button to generate a referral link
+echo "<button id='generate-link-btn'>Generate Referral Link</button>";
+echo "<input type='text' id='referral-link' value='http://localhost/raccoon%20websites/CashOut.com/register.php?referral_code=$referral_code' readonly>";
+
+// javascript to copy the referral link to clipboard when the button is clicked
+echo "<script>
+var referralLink = document.getElementById('referral-link');
+var generateLinkBtn = document.getElementById('generate-link-btn');
+generateLinkBtn.addEventListener('click', function() {
+    referralLink.select();
+    document.execCommand('copy');
+    alert('Link Copied!');
+});
+</script>";
 
 // create a form for the user to withdraw and deposit cash
 echo "<form action='withdraw_deposit.php' method='post'>";

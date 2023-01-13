@@ -28,5 +28,8 @@ echo "Password: <input type='password' name='password' required/><br>";
 echo "<input type='submit' name='submit' value='Log In'/>";
 echo "</form>";
 
+//add the link to the password reset page
+echo "<a href='password_reset.php'>Forgot your password?</a>";
+
 $conn->close();
 ?>
