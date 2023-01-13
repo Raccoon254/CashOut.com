@@ -79,28 +79,53 @@ if(isset($_POST['submit'])) {
             }
         }
         } else if ($category == "Website") {
-            $query = "SELECT * FROM Advertisements WHERE name='$name'";
-                    $result = mysqli_query($conn, $query);
-                    if(mysqli_num_rows($result) > 0) {
-                           echo "Sorry, that name already exists. Please try again.";
-                    } else {
-            $query = "INSERT INTO Advertisements (email, name, description, category, price, status)
-                              VALUES ('$email', '$name', '$description', '$category', '$price', '$status')";
-                    $result = mysqli_query($conn, $query);
-
-                    if($result) {
-                        // update user's balance
-                        $query = "UPDATE Users SET balance = balance - $price WHERE email='$email'";
+            if(isset($_FILES['cover'])) {
+                // retrieve file data
+                $file = $_FILES['cover'];
+                $file_name = $file['name'];
+                $file_tmp = $file['tmp_name'];
+                $file_size = $file['size'];
+                $file_error = $file['error'];
+                // check if there are any errors
+                if($file_error === 0) {
+                    // generate a unique file name
+                    $file_name_new = uniqid('', true) . '.' . pathinfo($file_name, PATHINFO_EXTENSION);
+                    // set the destination folder for the uploaded file
+                    $file_destination = 'uploads/' . $file_name_new;
+                    // move the uploaded file to the destination folder
+                    if(move_uploaded_file($file_tmp, $file_destination)) {
+                        // insert the new advertisement into the Advertisements table
+                        $query = "SELECT * FROM Advertisements WHERE name='$name'";
                         $result = mysqli_query($conn, $query);
-                        // insert the video details into the Videos table
-                        $query = "INSERT INTO Links (name, link)
-                                  VALUES ('$name', '$link')";
+                        if(mysqli_num_rows($result) > 0) {
+                               echo "Sorry, that name already exists. Please try again.";
+                        } else {   
+                                     $query = "INSERT INTO Advertisements (email, name, description, category, price, status)
+                            VALUES ('$email', '$name', '$description', '$category', '$price', '$status')";
+                  $result = mysqli_query($conn, $query);
+                        
+    
+                        //
+                        if($result) {
+                            // update user's balance
+                            if($result) {
+                                // update user's balance
+                                $query = "UPDATE Users SET balance = balance - $price WHERE email='$email'";
+                                $result = mysqli_query($conn, $query);
+                                // insert the cover details into the links table
+                                $query = "INSERT INTO Links (name, link, file_name, file_size, file_path)
+                                  VALUES ('$name', '$link' , '$file_name_new' , '$file_size' , '$file_destination')";
                         $result = mysqli_query($conn, $query);
-                        echo "Success! Your advertisement has been submitted and it is pending for approval.";
-                    } else {
-                        echo "Sorry, there was an error. Please try again.";
+                                echo "Success! Your advertisement has been submitted and it is pending for approval.";
+                            } else {
+                                echo "Sorry, there was an error. Please try again.";
+                            }
+    
+                        //
+                    }
                     }
                 }
+            }
         }
         
 
@@ -111,6 +136,7 @@ if(isset($_POST['submit'])) {
 
         //
     }
+}
 }
 
 echo "<form action='advertisements.php' method='post' enctype='multipart/form-data'>";
@@ -152,7 +178,9 @@ while ($rowVid = mysqli_fetch_array($resultVid)) {
         
         while ($rowLink = mysqli_fetch_array($resultLink)) {
             $displayedLink = $rowLink['link'] ;
-            echo "<a href='https://$displayedLink' target='_blank'>tap!</a>  Name of the link: ".$rowLink['link']."<br>";
+            $cover = $rowLink['file_path'];
+            echo "<a href='https://$displayedLink' target='_blank'><img src='$cover' alt='' width='320' height='240'></a>  
+            <br> Name of the link: <a href='https://".$rowLink['link']."'>".$rowLink['link']."</a><br>";
             echo "------------------------------------------------- <br>";
         }
     }
@@ -164,8 +192,7 @@ while ($rowVid = mysqli_fetch_array($resultVid)) {
 
 
 
-
-echo "List of Videos: <br>";
+echo "<a href='homepage.php'><button>home</button></a>";
 
 
 
